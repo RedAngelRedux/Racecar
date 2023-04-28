@@ -10,157 +10,88 @@ function runSubmit() {
     runtimeSpan.innerHTML = "";
     
     // obtain user values
-    let firstNum = document.getElementById("numberInput").value;
-    let variations = document.getElementsByName("rbVariation");
-    let variation = "rbA";
-    for( let i of variations) {
-        variation = (i.checked) ? i.id : variation;
-    }
-
-
-    // validate input
-    firstNum = parseInt(firstNum);
+    let testPhrase = document.getElementById("testPhrase").value;
 
     let errorMsg = "";
 
-    if(!Number.isInteger(firstNum)) {
-        errorMsg += `${errorMsg} The value you entered is not a valid integer<br>`;
+    if(!testPhrase) {
+        errorMsg += `${errorMsg} You can't race in the Palindrome with nothing to ride.<br>Enter a value please.`;
     }
 
     if( errorMsg == "") {
 
-        let results = [];
+        let results = "";
 
         const start = performance.now();
-        switch(variation) {
-            case "rbA": {
-                results = generateResults(firstNum);
-                break;
-            }
-            case "rbB": {
-                results = generateResultsB(firstNum);
-                break;
-            }
-            case "rbC": {
-                results = generateResultsC(firstNum);
-                break;
-            }
-            case "rbD": {
-                results = generateResultsD(firstNum);
-                break;
-            }
-        }
+        results = generateResults(testPhrase);
         const end = performance.now();
 
         runtimeSpan.innerHTML = `Execution time for solution selected was ${roundNumber(end-start,4)} ms`;
 
-        displayResults(results);
+        displayResults(results, resultsDiv);
 
     } else {
 
-        // get handle to template
-        let alertTemplate = document.getElementById("alertTemplate");
+        displayErrorMessage(errorMsg, resultsDiv);
 
-        // get handle to p tag via importNode
-        let template = document.importNode(alertTemplate.content,true);
-        let p = template.querySelector("p");
-
-        // clear p tag
-        p.innerHTML = "";
-
-        // add new message
-        p.innerHTML = errorMsg;
-
-        // append template to results div
-        resultsDiv.appendChild(template);
-        
     }
 
 }
 
 // LOGIC
-function generateResults(firstNum) {
+function generateResults(testPhrase) {
 
-    let results = ['A',firstNum,'A',firstNum]; 
+    let strArray = [];
 
-    return results;
+    // reverse the string using a for loop
+    for (let index = userString.length - 1; index >= 0; index--) {  
+        
+        strArray += userString[index];   
+    }
 
-}
-
-function generateResultsB(firstNum) {
-
-    let results = ['B',firstNum,'B',firstNum]; 
-
-    return results;
-
-}
-
-function generateResultsC(firstNum) {
-
-    let results = ['C',firstNum,'C',firstNum]; 
-
-    return results;
-
-}
-
-function generateResultsD(firstNum) {
-
-    let results = ['D',firstNum,'D',firstNum]; 
-
-    return results;
+    return strArray;
 
 }
 
 // UI
-function displayResults(fbArray) {
+function displayErrorMessage(errorMsg, resultsDiv) {
 
-    // get handle to results div
-    let resultsDiv = document.getElementById("resultsDiv");
+    // get handle to template
+    let alertTemplate = document.getElementById("alertTemplate");
 
-    // get handle to table template
-    let tableTemplate = document.getElementById("tableTemplate");
-    
-    // get handle to tbody tag via importNode
-    let table = document.importNode(tableTemplate.content,true);
-    let tbodyFizzBuzz = table.querySelector("tbody");
+    // get handle to p tag via importNode
+    let template = document.importNode(alertTemplate.content,true);
+    let p = template.querySelector("p");
 
     // clear p tag
-    tbodyFizzBuzz.innerHTML = "";
+    p.innerHTML = "";
 
-    // add all the rows to the table
-    for (let index = 0; index < fbArray.length; index += 5) {
-        
-        // let tableRow = document.importNode(tbodyFizzBuzz.content,true);
-        let tableRow = tbodyFizzBuzz.insertRow();
-        
-        // insert 5 cells
-        for (let index = 0; index < 5; index++) {
-            tableRow.insertCell();            
-        }
+    // add new message
+    p.innerHTML = errorMsg;
 
-        // grab just the td's and put them into an array
-        let rowCols = tableRow.querySelectorAll("td");
+    // append template to results div
+    resultsDiv.appendChild(template);
 
-        rowCols[0].textContent = fbArray[index];
-        rowCols[0].classList.add(fbArray[index]);
+}
 
-        rowCols[1].textContent = fbArray[index+1];
-        rowCols[1].classList.add(fbArray[index+1]);
+function displayResults(results, resultsDiv) {
 
-        rowCols[2].textContent = fbArray[index+2];
-        rowCols[2].classList.add(fbArray[index+2]);
+    // get handle to template
+    let successTemplate = document.getElementById("successTemplate");
 
-        rowCols[3].textContent = fbArray[index+3];
-        rowCols[3].classList.add(fbArray[index+3]);
+    // get handle to p tag via importNode
+    let template = document.importNode(successTemplate.content,true);
+    let p = template.querySelector("p");
 
-        rowCols[4].textContent = fbArray[index+4];
-        rowCols[4].classList.add(fbArray[index+4]);
+    // clear p tag
+    p.innerHTML = "";
 
-        tbodyFizzBuzz.appendChild(tableRow);
-    }
+    // add new message
+    p.innerHTML = results;
 
-        // document.getElementById("tableFizzBuzz").classList.remove("invisible");
-    resultsDiv.appendChild(table);
+    // append template to results div
+    resultsDiv.appendChild(template);
+
 }
 
 // SUPPORT LOGIC
