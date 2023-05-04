@@ -20,15 +20,15 @@ function runSubmit() {
 
     if( errorMsg == "") {
 
-        let results = "";
+        let result = false;
 
         const start = performance.now();
-        results = generateResults(testPhrase);
+        result = IsPalindronme(testPhrase);
         const end = performance.now();
 
         runtimeSpan.innerHTML = `Execution time for solution selected was ${roundNumber(end-start,4)} ms`;
 
-        displayResults(results, resultsDiv);
+        displayResults(result, resultsDiv);
 
     } else {
 
@@ -39,17 +39,14 @@ function runSubmit() {
 }
 
 // LOGIC
-function generateResults(testPhrase) {
+function IsPalindronme(testPhrase) {
 
-    let strArray = [];
+//    let re =  /[^A-Za-z0–9]/g;
+    let rex =  /[\W_]/g;
+    let phrase = testPhrase.toLowerCase().replace(rex,'');
+    let rPhrase = phrase.split('').reverse().join('');
 
-    // reverse the string using a for loop
-    for (let index = userString.length - 1; index >= 0; index--) {  
-        
-        strArray += userString[index];   
-    }
-
-    return strArray;
+    return phrase == rPhrase;
 
 }
 
@@ -74,23 +71,29 @@ function displayErrorMessage(errorMsg, resultsDiv) {
 
 }
 
-function displayResults(results, resultsDiv) {
+function displayResults(result, resultsDiv) {
 
-    // get handle to template
-    let successTemplate = document.getElementById("successTemplate");
+    if( result == true) {
+        // get handle to template
+        let successTemplate = document.getElementById("successTemplate");
 
-    // get handle to p tag via importNode
-    let template = document.importNode(successTemplate.content,true);
-    let p = template.querySelector("p");
+        // get handle to p tag via importNode
+        let template = document.importNode(successTemplate.content,true);
+        let p = template.querySelector("p");
 
-    // clear p tag
-    p.innerHTML = "";
+        // clear p tag
+        p.innerHTML = "";
 
-    // add new message
-    p.innerHTML = results;
+        // add new message
+        p.innerHTML = `Congratulations!!! You found yourself a Palindrome.`
 
-    // append template to results div
-    resultsDiv.appendChild(template);
+        // append template to results div
+        resultsDiv.appendChild(template);
+    }
+    else {
+        displayErrorMessage("Sorry, that is not a Palindrome",resultsDiv);
+    }
+
 
 }
 
